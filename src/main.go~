@@ -1,0 +1,64 @@
+/*package main
+
+import (
+	"fmt"
+
+	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/tools/container/intsets"
+)
+
+func main() {
+	fmt.Println("勇次郎先生の名言集を集めてみる")
+
+	doc, err := goquery.NewDocument("view-source:http://meigenkakugen.net/%E7%AF%84%E9%A6%AC%E5%8B%87%E6%AC%A1%E9%83%8E/")
+	if err != nil {
+		panic(err)
+	}
+
+	doc.Find(".graybox").Each(func(icnt int, sel *goquery.Selection) {
+		texts := sel.Text
+		fmt.Println(texts)
+	})
+}*/
+package main
+
+import "github.com/codegangsta/cli"
+
+type entry struct {
+	Title string `json:title`
+	URL   string `json:url`
+}
+
+type QueryResult struct {
+	Title   string
+	Entries []*entry
+}
+
+type JsonFormat struct {
+	Entries []*entry `json:entry`
+	Error   string   `json:error`
+}
+
+func main() {
+	app := cli.NewApp()
+	app.Name = "hngo"
+	app.Usage = "Command Line Client for Hacker News (https://news.ycombinator.com/)"
+	app.ArgsUsage = "[category]"
+	app.HideHelp = true
+	app.Flags = []cli.Flag{
+		cli.IntFlag{
+			Name:  "number, n",
+			Value: 10,
+			Usage: "number of output lines",
+		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "output as json",
+		},
+	}
+
+	app.Action = func(c *cli.Context) {
+		category := c.Args().First
+		number := c.Int("number")
+	}
+}
